@@ -1,4 +1,4 @@
-package com.training.fitflow.workloadservice.dto.request;
+package com.training.fitflow.workloadservice.dto.workload.request;
 
 import com.training.fitflow.workloadservice.model.ActionType;
 import jakarta.validation.constraints.NotBlank;

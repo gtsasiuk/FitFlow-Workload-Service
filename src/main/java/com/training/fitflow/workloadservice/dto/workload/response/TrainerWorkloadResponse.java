@@ -1,4 +1,4 @@
-package com.training.fitflow.workloadservice.dto.response;
+package com.training.fitflow.workloadservice.dto.workload.response;
 
 import java.util.Map;
 

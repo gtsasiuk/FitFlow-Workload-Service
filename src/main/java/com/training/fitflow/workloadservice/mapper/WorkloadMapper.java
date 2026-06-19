@@ -1,7 +1,7 @@
 package com.training.fitflow.workloadservice.mapper;
 
-import com.training.fitflow.workloadservice.dto.request.TrainerWorkloadRequest;
-import com.training.fitflow.workloadservice.dto.response.TrainerWorkloadResponse;
+import com.training.fitflow.workloadservice.dto.workload.request.TrainerWorkloadRequest;
+import com.training.fitflow.workloadservice.dto.workload.response.TrainerWorkloadResponse;
 import com.training.fitflow.workloadservice.model.TrainerWorkloadSummary;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
