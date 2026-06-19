@@ -1,6 +1,8 @@
 package com.training.fitflow.workloadservice.service;
 
 import com.training.fitflow.workloadservice.dto.request.TrainerWorkloadRequest;
+import com.training.fitflow.workloadservice.dto.response.TrainerWorkloadResponse;
+import com.training.fitflow.workloadservice.mapper.WorkloadMapper;
 import com.training.fitflow.workloadservice.model.ActionType;
 import com.training.fitflow.workloadservice.model.TrainerWorkloadSummary;
 import com.training.fitflow.workloadservice.storage.WorkloadStorage;
@@ -13,20 +15,12 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class WorkloadService {
     private final WorkloadStorage storage;
+    private final WorkloadMapper mapper;
 
-    private TrainerWorkloadSummary createNew(TrainerWorkloadRequest request) {
-        TrainerWorkloadSummary summary = new TrainerWorkloadSummary();
-        summary.setUsername(request.trainerUsername());
-        summary.setFirstName(request.trainerFirstName());
-        summary.setLastName(request.trainerLastName());
-        summary.setActive(request.isActive());
-        return summary;
-    }
-
-    public void processWorkloadChange(TrainerWorkloadRequest request) {
+    public void processWorkload(TrainerWorkloadRequest request) {
         String username = request.trainerUsername();
         TrainerWorkloadSummary summary = storage.getStorage()
-                .computeIfAbsent(username, k -> createNew(request));
+                .computeIfAbsent(username, k -> mapper.toNewSummary(request));
 
         int year = request.trainingDate().getYear();
         int month = request.trainingDate().getMonthValue();
@@ -43,5 +37,8 @@ public class WorkloadService {
         }
     }
 
-
+    public TrainerWorkloadResponse getWorkload(String username) {
+        TrainerWorkloadSummary summary = storage.getStorage().get(username);
+        return mapper.toResponse(summary);
+    }
 }
