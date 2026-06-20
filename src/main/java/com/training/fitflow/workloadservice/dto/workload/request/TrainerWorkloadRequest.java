@@ -7,19 +7,19 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record TrainerWorkloadRequest(
-        @NotBlank
+        @NotBlank(message = "Trainer username is required")
         String trainerUsername,
-        @NotBlank
+        @NotBlank(message = "Trainer first name is required")
         String trainerFirstName,
-        @NotBlank
+        @NotBlank(message = "Trainer last name is required")
         String trainerLastName,
-        @NotNull
+        @NotNull(message = "Trainer active status is required")
         Boolean isActive,
-        @NotNull
+        @NotNull(message = "Training date is required")
         LocalDate trainingDate,
-        @NotNull
+        @NotNull(message = "Training duration is required")
         Long trainingDuration,
-        @NotNull
+        @NotNull(message = "Action type is required")
         ActionType actionType
 ) {
 }

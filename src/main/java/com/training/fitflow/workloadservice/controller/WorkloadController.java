@@ -21,7 +21,9 @@ public class WorkloadController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<TrainerWorkloadResponse> getWorkload(@PathVariable("username") String username) {
-        return ResponseEntity.ok(workloadService.getWorkload(username));
+    public ResponseEntity<TrainerWorkloadResponse> getWorkload(@PathVariable("username") String username,
+                                                               @RequestParam(required = false) Integer year,
+                                                               @RequestParam(required = false) Integer month) {
+        return ResponseEntity.ok(workloadService.getWorkload(username, year, month));
     }
 }
