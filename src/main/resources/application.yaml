@@ -3,11 +3,19 @@ spring:
     name: fitflow-workload-service
 
 server:
-  port: 8084
+  port: ${SERVER_PORT:8084}
+
+logging:
+  pattern:
+    console: "%d{HH:mm:ss} [%X{transactionId:-no-txn}] %clr([%15.15t]){faint} %clr(%-5level) %clr(%logger{36}){faint} - %msg%n"
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
   instance:
     prefer-ip-address: true
+
+security:
+  jwt:
+    secret: ${SERVICE_JWT_SECRET:fitflow-service-secret-key-for-internal-calls-only}
