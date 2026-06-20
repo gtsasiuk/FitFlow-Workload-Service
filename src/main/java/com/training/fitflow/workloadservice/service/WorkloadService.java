@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,18 +24,22 @@ public class WorkloadService {
         TrainerWorkloadSummary summary = storage.getStorage()
                 .computeIfAbsent(username, k -> mapper.toNewSummary(request));
 
-        int year = request.trainingDate().getYear();
-        int month = request.trainingDate().getMonthValue();
+        synchronized (summary) {
+            summary.setActive(request.isActive());
 
-        summary.getYearMonthDuration()
-                .computeIfAbsent(year, k -> new HashMap<>());
+            int year = request.trainingDate().getYear();
+            int month = request.trainingDate().getMonthValue();
+            long delta = request.actionType() == ActionType.ADD
+                    ? request.trainingDuration()
+                    : -request.trainingDuration();
 
-        if (request.actionType() == ActionType.ADD) {
-            summary.getYearMonthDuration().get(year)
-                    .merge(month, request.trainingDuration(), Long::sum);
-        } else {
-            summary.getYearMonthDuration().get(year)
-                    .merge(month, request.trainingDuration(), (current, delta) -> Math.max(0, current - delta));
+            Map<Integer, Long> months = summary.getYearMonthDuration()
+                    .computeIfAbsent(year, k -> new HashMap<>());
+
+            months.compute(month, (k, current) -> {
+                long base = current == null ? 0L : current;
+                return Math.max(0L, base + delta);
+            });
         }
     }
 
