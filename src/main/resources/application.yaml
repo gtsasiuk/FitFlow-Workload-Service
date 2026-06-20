@@ -16,6 +16,6 @@ eureka:
   instance:
     prefer-ip-address: true
 
-security:
+service:
   jwt:
     secret: ${SERVICE_JWT_SECRET:fitflow-service-secret-key-for-internal-calls-only}
