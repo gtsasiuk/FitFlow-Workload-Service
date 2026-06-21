@@ -68,7 +68,9 @@ public class WorkloadService {
             throw new TrainerNotFoundException(username);
         }
 
-        return mapper.toResponse(filterByPeriod(summary, year, month));
+        synchronized (summary) {
+            return mapper.toResponse(filterByPeriod(summary, year, month));
+        }
     }
 
     private TrainerWorkloadSummary filterByPeriod(TrainerWorkloadSummary summary, Integer year, Integer month) {
@@ -76,15 +78,16 @@ public class WorkloadService {
             throw new InvalidWorkloadQueryException("Year must be provided when month is specified");
         }
 
-        if (year == null) {
-            return summary;
-        }
-
         TrainerWorkloadSummary copy = new TrainerWorkloadSummary();
         copy.setUsername(summary.getUsername());
         copy.setFirstName(summary.getFirstName());
         copy.setLastName(summary.getLastName());
         copy.setActive(summary.getActive());
+
+        if (year == null) {
+            copy.setYearMonthDuration(deepCopy(summary.getYearMonthDuration()));
+            return copy;
+        }
 
         Map<Integer, Long> sourceMonths = summary.getYearMonthDuration().get(year);
         if (sourceMonths == null) {
@@ -104,6 +107,12 @@ public class WorkloadService {
         if (!resultMonths.isEmpty()) {
             copy.getYearMonthDuration().put(year, resultMonths);
         }
+        return copy;
+    }
+
+    private Map<Integer, Map<Integer, Long>> deepCopy(Map<Integer, Map<Integer, Long>> source) {
+        Map<Integer, Map<Integer, Long>> copy = new HashMap<>();
+        source.forEach((y, months) -> copy.put(y, new HashMap<>(months)));
         return copy;
     }
 }
